@@ -1,0 +1,15 @@
+// Todo
+
+
+Generate classes for a camera object which handles the recording etc, but has public access for the current frame so we can update our main IMageViews on the application
+
+Features:
+
+    - ExpandableViews that change in size dynamically (drag to expand like gyfcat maybe?)
+    - Current bitrate (12fps @ 640x480) 24hrs = 15gb of video using Codec 66
+	
+	
+	
+On release:
+
+	provide opencv_ffmpeg and opencv310 dlls in the buildpath

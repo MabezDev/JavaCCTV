@@ -1,0 +1,12 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="JavaCCTVWC:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/JavaCCTVWC_jar</output-path>
+    <root id="archive" name="JavaCCTVWC.jar">
+      <element id="module-output" name="JavaCCTVWC" />
+      <element id="extracted-dir" path="$USER_HOME$/Documents/Personal Projects/Programming/CCTV/OPENCV3/opencv/build/java/opencv-310.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Documents/Personal Projects/Programming/CCTV/webcam-capture-0.3.10-dist/webcam-capture-0.3.10.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Documents/Personal Projects/Programming/CCTV/webcam-capture-0.3.10-dist/libs/slf4j-api-1.7.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Documents/Personal Projects/Programming/CCTV/webcam-capture-0.3.10-dist/libs/bridj-0.6.2.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
