@@ -10,7 +10,7 @@
           <Pane prefHeight="540.0" prefWidth="640.0">
              <children>
                 <ImageView fx:id="cameraImage" fitHeight="480.0" fitWidth="640.0" pickOnBounds="true" preserveRatio="true" />
-                <Button fx:id="recordButton" layoutX="104.0" layoutY="501.0" mnemonicParsing="false" text="Record" onAction="#startRecording"/>
+                <Button fx:id="recordButton" layoutX="104.0" layoutY="501.0" mnemonicParsing="false" text="Record" onAction="#toggleRecording"/>
                 <ChoiceBox fx:id="sourceChoice" layoutX="245.0" layoutY="501.0" prefWidth="150.0" />
              </children>
           </Pane>

@@ -10,7 +10,11 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.RowConstraints;
+import javafx.scene.text.Text;
+import javafx.stage.Screen;
 import org.opencv.core.*;
 import org.opencv.videoio.VideoCapture;
 import org.opencv.videoio.VideoWriter;
@@ -30,38 +34,16 @@ public class Controller implements Initializable{
     private boolean isRecording = false;
 
     private Thread monitor;
-    private SimpleDateFormat dateFormat = new SimpleDateFormat ("dd.MM.yy HH:mm:ss");
-    public static final SimpleDateFormat timeOnly = new SimpleDateFormat ("HH.mm.ss");
-    public static final SimpleDateFormat dateOnly = new SimpleDateFormat ("dd.MM.yy");
-    public static final int MP4_CODEC_ID = 66;
 
-    private ArrayList<Camera> cameraObjects;
-    private HashMap<String,Integer> connectedCameras;
+    private ArrayList<Integer> connectedCameras;
     private ObservableList<CameraUI> cameraUI;
+
+    @FXML
+    private GridPane gridView;
 
 
     public static final String RECORD_LOCATION = FileSystemView.getFileSystemView().getDefaultDirectory().getPath() + File.separator + "MabezCCTV" + File.separator;
 
-    @FXML
-    private ChoiceBox<String> sourceChoiceLeft;
-
-    @FXML
-    private ChoiceBox<String> sourceChoiceRight;
-
-    @FXML
-    private ImageView camLeft;
-
-    @FXML
-    private ImageView camRight;
-
-    @FXML
-    private Button record_button;
-
-    @FXML
-    private Button monitor_btn;
-
-    @FXML
-    private BorderPane borderPane;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -75,54 +57,36 @@ public class Controller implements Initializable{
         System.out.println("Controller class initialized.");
         System.out.println("Path of recordings set to:");
         System.out.println(RECORD_LOCATION);
-
         makeDirectory(RECORD_LOCATION);
-        connectedCameras = getDevices(10);
-        ObservableList<String> devices = FXCollections.observableArrayList(connectedCameras.keySet());
-        sourceChoiceLeft.setItems(devices);
-        sourceChoiceRight.setItems(devices);
 
-        cameraObjects = new ArrayList<>();
-
-        for(int i = 0; i < connectedCameras.size(); i++) {
-            sourceChoiceLeft.setValue(devices.get(i));
-            cameraObjects.add(new Camera(i,12));
-        }
-
-        cameraObjects.forEach(c -> c.openCamera());
-
-        monitor_btn.fire();
 
         cameraUI = FXCollections.observableArrayList();
-        CameraUI c = new CameraUI();
-        borderPane.getChildren().add(1,c);
+
+        connectedCameras = getDevices(10);
+
+        gridView.setPrefSize(Screen.getPrimary().getVisualBounds().getWidth(),Screen.getPrimary().getVisualBounds().getHeight());
+        gridView.setHgap(10);
+        gridView.setVgap(10);
+
+        for(int i=0; i < connectedCameras.size(); i++){
+            CameraUI cam = new CameraUI(connectedCameras.get(i));
+            gridView.add(cam,0,i+1);
+            cameraUI.add(cam);
+        }
     }
 
-    private HashMap<String,Integer> getDevices(int numberOfDevicesToCheck){
-        HashMap<String,Integer> devices = new HashMap<>();
+    private ArrayList<Integer> getDevices(int numberOfDevicesToCheck){
+        ArrayList<Integer> devices = new ArrayList<>();
         VideoCapture temp = new VideoCapture();
         for(int i = 0; i < numberOfDevicesToCheck; i++){
             temp.open(i);
             if(temp.isOpened()){
-                devices.put("Camera "+Integer.toString(i), i);
+                devices.add(i);
             }
         }
         System.out.println("Camera Search complete, "+devices.size()+" camera(s) found!");
         temp.release();
         return devices;
-    }
-
-    @FXML
-    void startRecording(ActionEvent event) {
-        System.out.println("Record Button Pressed.");
-        isRecording = !isRecording;
-        if(isRecording){
-            record_button.setText("Stop Recording");
-            cameraObjects.get(0).startRecording();
-        } else {
-            record_button.setText("Record");
-            cameraObjects.get(0).stopRecording();
-        }
     }
 
     private void updateDisplay(ImageView view,Image frameToDraw){
@@ -146,11 +110,11 @@ public class Controller implements Initializable{
         System.out.println("Monitor Button Pressed.");
         isMonitoring = !isMonitoring;
         if(isMonitoring){
-            monitor_btn.setText("Stop Monitoring");
+            //monitor_btn.setText("Stop Monitoring");
             monitor = new Thread(() -> {
                 while(isMonitoring){
-                    updateDisplay(camLeft,cameraObjects.get(0).getCurrentImage());
-                    updateDisplay(camRight,cameraObjects.get(0).getCurrentImage());
+                    //updateDisplay(camLeft,cameraObjects.get(0).getCurrentImage());
+                    //updateDisplay(camRight,cameraObjects.get(0).getCurrentImage());
 
                     try {
                         Thread.sleep(40);
@@ -160,7 +124,7 @@ public class Controller implements Initializable{
             });
             monitor.start();
         } else {
-            monitor_btn.setText("Monitor");
+            //monitor_btn.setText("Monitor");
             monitor.interrupt();
         }
 
@@ -171,7 +135,7 @@ public class Controller implements Initializable{
             isMonitoring = false;//halt loop
             monitor.interrupt();//kill thread
         }
-        cameraObjects.forEach(c -> c.closeCamera());
+        cameraUI.forEach(c -> c.stop());
         System.out.println("Controller: Stopping application.");
     }
 

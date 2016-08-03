@@ -9,33 +9,14 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 
-<GridPane alignment="center" hgap="10" prefHeight="699.0" prefWidth="1042.0" vgap="10" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mabezdev.javacctv.Controller">
+<GridPane fx:id="gridView" alignment="center" hgap="10" prefHeight="580.0" prefWidth="814.0" vgap="10" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mabezdev.javacctv.Controller">
    <columnConstraints>
+      <ColumnConstraints minWidth="10.0" percentWidth="30.0" prefWidth="100.0" />
+      <ColumnConstraints minWidth="10.0" percentWidth="30.0" prefWidth="100.0" />
+      <ColumnConstraints minWidth="10.0" percentWidth="30.0" prefWidth="100.0" />
       <ColumnConstraints />
    </columnConstraints>
    <rowConstraints>
       <RowConstraints />
    </rowConstraints>
-   <children>
-      <BorderPane fx:id="borderPane" prefHeight="701.0" prefWidth="1040.0">
-         <bottom>
-            <Pane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-               <children>
-                  <Button fx:id="record_button" layoutX="391.0" layoutY="148.0" mnemonicParsing="false" onAction="#startRecording" text="Record" />
-                  <Button fx:id="monitor_btn" layoutX="616.0" layoutY="148.0" mnemonicParsing="false" onAction="#startMonitoring" text="Monitor" />
-               </children>
-            </Pane>
-         </bottom>
-         <center>
-            <Pane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-               <children>
-                  <ImageView fx:id="camRight" fitHeight="265.0" fitWidth="354.0" layoutX="646.0" layoutY="90.0" pickOnBounds="true" preserveRatio="true" />
-                  <ImageView fx:id="camLeft" fitHeight="265.0" fitWidth="354.0" layoutX="46.0" layoutY="90.0" pickOnBounds="true" preserveRatio="true" />
-                  <ChoiceBox fx:id="sourceChoiceLeft" layoutX="73.0" layoutY="408.0" prefWidth="150.0" />
-                  <ChoiceBox fx:id="sourceChoiceRight" layoutX="823.0" layoutY="408.0" prefWidth="150.0" />
-               </children>
-            </Pane>
-         </center>
-      </BorderPane>
-   </children>
 </GridPane>

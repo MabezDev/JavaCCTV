@@ -10,6 +10,7 @@ import org.opencv.videoio.VideoCapture;
 import org.opencv.videoio.VideoWriter;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static java.lang.Thread.sleep;
@@ -31,6 +32,10 @@ public class Camera {
     private int cameraId;
     private int FPS = 12;
 
+    public static final SimpleDateFormat timeOnly = new SimpleDateFormat ("HH.mm.ss");
+    public static final SimpleDateFormat dateOnly = new SimpleDateFormat ("dd.MM.yy");
+    public static final int MP4_CODEC_ID = 66;
+
 
     public Camera(int cameraID,int fps){
         this.cameraId = cameraID;
@@ -42,15 +47,15 @@ public class Camera {
     public void startRecording(){
         isRecording = true;
         //open file, setup encoders
-        String folder = Utility.makeDirectory(Controller.RECORD_LOCATION+ File.separator + Controller.dateOnly.format(new Date()));
-        String time = Controller.timeOnly.format(new Date());
+        String folder = Utility.makeDirectory(Controller.RECORD_LOCATION+ File.separator + dateOnly.format(new Date()));
+        String time = timeOnly.format(new Date());
         //System.out.println("final: "+folder + time +".mp4");
 
         recorder = new VideoWriter();
             /*
                 IMPORTANT: remember to play opencv_ffmpeg*.dll in build path otherwise this will silently fail to open all videos
              */
-        recorder.open(folder + time + " CAM "+ cameraId +".mp4", Controller.MP4_CODEC_ID,12,getSize());
+        recorder.open(folder + time + " CAM "+ cameraId +".mp4", MP4_CODEC_ID,12,getSize());
         if(recorder.isOpened()){
             System.out.println("Writer opened!");
         } else {
@@ -120,7 +125,7 @@ public class Camera {
         if(capture.isOpened()){
             capture.read(frame);
             if(!frame.empty()){
-                Imgproc.putText(frame, Controller.timeOnly.format(new Date()) + "   " + Controller.dateOnly.format(new Date()),new Point(290,440), Core.FONT_HERSHEY_PLAIN, 2.0, new Scalar(200,200,200));
+                Imgproc.putText(frame, timeOnly.format(new Date()) + "   " + dateOnly.format(new Date()),new Point(290,440), Core.FONT_HERSHEY_PLAIN, 2.0, new Scalar(200,200,200));
             }
         }
         return frame;
