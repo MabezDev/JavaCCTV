@@ -1,11 +1,6 @@
-package sample;
+package com.mabezdev.javacctv;
 
-import com.github.sarxos.webcam.Webcam;
-import com.sun.org.apache.regexp.internal.RE;
-import com.sun.org.apache.xpath.internal.SourceTree;
-import javafx.beans.InvalidationListener;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -14,9 +9,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.Image;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import org.opencv.core.*;
-import org.opencv.core.Point;
-import org.opencv.imgproc.Imgproc;
 import org.opencv.videoio.VideoCapture;
 import org.opencv.videoio.VideoWriter;
 
@@ -27,7 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static java.lang.Thread.sleep;
-import static sample.Utils.makeDirectory;
+import static com.mabezdev.javacctv.Utils.Utility.makeDirectory;
 
 public class Controller implements Initializable{
 
@@ -42,6 +37,7 @@ public class Controller implements Initializable{
 
     private ArrayList<Camera> cameraObjects;
     private HashMap<String,Integer> connectedCameras;
+    private ObservableList<CameraUI> cameraUI;
 
 
     public static final String RECORD_LOCATION = FileSystemView.getFileSystemView().getDefaultDirectory().getPath() + File.separator + "MabezCCTV" + File.separator;
@@ -63,6 +59,9 @@ public class Controller implements Initializable{
 
     @FXML
     private Button monitor_btn;
+
+    @FXML
+    private BorderPane borderPane;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -90,11 +89,13 @@ public class Controller implements Initializable{
             cameraObjects.add(new Camera(i,12));
         }
 
-        for(Camera c : cameraObjects){
-            c.openCamera();
-        }
+        cameraObjects.forEach(c -> c.openCamera());
 
         monitor_btn.fire();
+
+        cameraUI = FXCollections.observableArrayList();
+        CameraUI c = new CameraUI();
+        borderPane.getChildren().add(1,c);
     }
 
     private HashMap<String,Integer> getDevices(int numberOfDevicesToCheck){
@@ -149,6 +150,12 @@ public class Controller implements Initializable{
             monitor = new Thread(() -> {
                 while(isMonitoring){
                     updateDisplay(camLeft,cameraObjects.get(0).getCurrentImage());
+                    updateDisplay(camRight,cameraObjects.get(0).getCurrentImage());
+
+                    try {
+                        Thread.sleep(40);
+                    } catch (InterruptedException e) {
+                    }
                 }
             });
             monitor.start();
@@ -164,9 +171,7 @@ public class Controller implements Initializable{
             isMonitoring = false;//halt loop
             monitor.interrupt();//kill thread
         }
-        for(Camera c : cameraObjects){
-            c.closeCamera();
-        }
+        cameraObjects.forEach(c -> c.closeCamera());
         System.out.println("Controller: Stopping application.");
     }
 

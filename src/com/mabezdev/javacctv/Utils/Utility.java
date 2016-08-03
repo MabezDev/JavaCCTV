@@ -1,4 +1,4 @@
-package sample;
+package com.mabezdev.javacctv.Utils;
 
 import javafx.scene.image.Image;
 import org.opencv.core.Mat;
@@ -11,7 +11,7 @@ import java.io.File;
 /**
  * Created by Mabez on 01/08/2016.
  */
-public class Utils {
+public class Utility {
 
     public static Image mat2Image(Mat frame)
     {

@@ -9,7 +9,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 
-<GridPane alignment="center" hgap="10" prefHeight="699.0" prefWidth="1042.0" vgap="10" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+<GridPane alignment="center" hgap="10" prefHeight="699.0" prefWidth="1042.0" vgap="10" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mabezdev.javacctv.Controller">
    <columnConstraints>
       <ColumnConstraints />
    </columnConstraints>
@@ -17,7 +17,7 @@
       <RowConstraints />
    </rowConstraints>
    <children>
-      <BorderPane prefHeight="701.0" prefWidth="1040.0">
+      <BorderPane fx:id="borderPane" prefHeight="701.0" prefWidth="1040.0">
          <bottom>
             <Pane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                <children>
