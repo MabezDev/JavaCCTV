@@ -1,10 +1,12 @@
 package com.mabezdev.javacctv;
 
+import com.sun.deploy.util.SystemUtils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.image.ImageView;
@@ -16,6 +18,8 @@ import javafx.scene.layout.RowConstraints;
 import javafx.scene.text.Text;
 import javafx.stage.Screen;
 import org.opencv.core.*;
+import org.opencv.video.BackgroundSubtractorMOG2;
+import org.opencv.video.Video;
 import org.opencv.videoio.VideoCapture;
 import org.opencv.videoio.VideoWriter;
 
@@ -33,8 +37,6 @@ public class Controller implements Initializable{
     private boolean isMonitoring = false;
     private boolean isRecording = false;
 
-    private Thread monitor;
-
     private ArrayList<Integer> connectedCameras;
     private ObservableList<CameraUI> cameraUI;
 
@@ -47,12 +49,18 @@ public class Controller implements Initializable{
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        if(System.getProperty("sun.arch.data.model").equals("32")) {
-            System.loadLibrary(Core.NATIVE_LIBRARY_NAME+"_32");
-        } else if(System.getProperty("sun.arch.data.model").equals("64")){
-            System.loadLibrary(Core.NATIVE_LIBRARY_NAME+"_64");
+        System.out.println(System.getProperty("os.name").toLowerCase());
+        if(System.getProperty("os.name").toLowerCase().contains("windows")) {
+            if (System.getProperty("sun.arch.data.model").equals("32")) {
+                System.loadLibrary(Core.NATIVE_LIBRARY_NAME + "_32");
+            } else if (System.getProperty("sun.arch.data.model").equals("64")) {
+                System.loadLibrary(Core.NATIVE_LIBRARY_NAME + "_64");
+            } else {
+                System.out.println(System.getProperty("sun.arch.data.model") + " is not a supported architecture");
+            }
         } else {
-            System.out.println(System.getProperty("sun.arch.data.model") + " is not a supported architecture");
+            //load linux dependancies
+            System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
         }
         System.out.println("Controller class initialized.");
         System.out.println("Path of recordings set to:");
@@ -63,6 +71,11 @@ public class Controller implements Initializable{
         cameraUI = FXCollections.observableArrayList();
 
         connectedCameras = getDevices(10);
+
+        if(connectedCameras.size() == 0){
+            showDialog("No camera's detected!","No camera's detected!","No camera's were found or are being used by another program, plug one or more in and restart the program.", Alert.AlertType.INFORMATION);
+            System.exit(0);
+        }
 
         gridView.setPrefSize(Screen.getPrimary().getVisualBounds().getWidth(),Screen.getPrimary().getVisualBounds().getHeight());
         gridView.setHgap(10);
@@ -89,12 +102,6 @@ public class Controller implements Initializable{
         return devices;
     }
 
-    private void updateDisplay(ImageView view,Image frameToDraw){
-        if(frameToDraw != null) {
-            view.setImage(frameToDraw);
-        }
-    }
-
     private void testCodecs(){
         VideoWriter v = new VideoWriter();
         for(int i = 1; i < 100; i++){
@@ -103,40 +110,24 @@ public class Controller implements Initializable{
                 System.out.println(i+ " is a valid codec.");
             }
         }
+        v.release();
     }
 
-    @FXML
-    void startMonitoring(ActionEvent event) {
-        System.out.println("Monitor Button Pressed.");
-        isMonitoring = !isMonitoring;
-        if(isMonitoring){
-            //monitor_btn.setText("Stop Monitoring");
-            monitor = new Thread(() -> {
-                while(isMonitoring){
-                    //updateDisplay(camLeft,cameraObjects.get(0).getCurrentImage());
-                    //updateDisplay(camRight,cameraObjects.get(0).getCurrentImage());
-
-                    try {
-                        Thread.sleep(40);
-                    } catch (InterruptedException e) {
-                    }
-                }
-            });
-            monitor.start();
-        } else {
-            //monitor_btn.setText("Monitor");
-            monitor.interrupt();
-        }
-
+    private void checkForMotion(){ //motion detection method
+        BackgroundSubtractorMOG2 mog2 = Video.createBackgroundSubtractorMOG2();
     }
 
     public void stop(){
-        if(isMonitoring){
-            isMonitoring = false;//halt loop
-            monitor.interrupt();//kill thread
-        }
-        cameraUI.forEach(c -> c.stop());
+        cameraUI.forEach(c -> c.stop()); //stop all cameras, release from memory before shutdown (important as if the threads are not killed the program will hang!)
         System.out.println("Controller: Stopping application.");
+    }
+
+    public void showDialog(String windowTitle, String headerText, String text, Alert.AlertType type){
+        Alert a = new Alert(type);
+        a.setTitle(windowTitle);
+        a.setHeaderText(headerText);
+        a.setContentText(text);
+        a.showAndWait();
     }
 
     private class Codec{

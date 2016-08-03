@@ -7,10 +7,10 @@
 
 <fx:root maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="540.0" prefWidth="640.0" type="VBox" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
        <children>
-          <Pane prefHeight="540.0" prefWidth="640.0">
+          <Pane fx:id="pane" prefHeight="540.0" prefWidth="640.0">
              <children>
                 <ImageView fx:id="cameraImage" fitHeight="480.0" fitWidth="640.0" pickOnBounds="true" preserveRatio="true" />
-                <Button fx:id="recordButton" layoutX="104.0" layoutY="501.0" mnemonicParsing="false" text="Record" onAction="#toggleRecording"/>
+                <Button fx:id="recordButton" layoutX="104.0" layoutY="501.0" mnemonicParsing="false" onAction="#toggleRecording" text="Record" />
                 <ChoiceBox fx:id="sourceChoice" layoutX="245.0" layoutY="501.0" prefWidth="150.0" />
              </children>
           </Pane>

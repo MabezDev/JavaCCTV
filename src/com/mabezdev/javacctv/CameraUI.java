@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
 import java.io.IOException;
@@ -24,6 +25,9 @@ public class CameraUI extends VBox {
     @FXML
     private Button recordButton;
 
+    @FXML
+    private Pane pane;
+
     private Camera camera;
     private boolean isRunning = true;
     private Thread run;
@@ -41,12 +45,14 @@ public class CameraUI extends VBox {
             throw new RuntimeException(exception);
         }
 
+        pane.setStyle("-fx-background-color:darkslategrey");
+
         //will most likely remove the choice box and auto open every camera it can find
 
         camera = new Camera(cameraIndex,12);//zero will be replaced with choice from ChoiceBox, not sure if we should have a fixed fps or not
         camera.openCamera();
 
-        run = new Thread(() -> { //refreshes the preview
+        run = new Thread(() -> { //refreshes the preview, on thread so we not lock the ui
            while(isRunning){
                 cameraImage.setImage(camera.getCurrentImage());
                try {

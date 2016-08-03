@@ -3,6 +3,7 @@ package com.mabezdev.javacctv;
 
 import com.mabezdev.javacctv.Controller;
 import com.mabezdev.javacctv.Utils.Utility;
+import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 import org.opencv.core.*;
 import org.opencv.imgproc.Imgproc;
@@ -14,6 +15,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static java.lang.Thread.sleep;
+import static org.opencv.core.CvType.CV_8UC3;
+import static org.opencv.videoio.Videoio.CAP_PROP_FORMAT;
 
 /**
  * Created by Mabez on 01/08/2016.
@@ -93,13 +96,18 @@ public class Camera {
             while (isOpen) {
                 Mat currentFrame = grabFrame();
                 if(currentFrame != null) {
-                    currentImage = Utility.mat2Image(currentFrame);
                     if(isRecording){
                         //write to file
                         if(recorder.isOpened()){
-                            recorder.write(currentFrame);
+                            try {
+                                recorder.write(currentFrame);
+                            } catch (Exception e){
+                                e.printStackTrace();
+                            }
                         }
                     }
+                    // add the overlay after we have written the frame to disk
+                    currentImage = Utility.mat2Image(addMonitorOverlay(currentFrame));
                 }
                 try {
                     sleep(15);
@@ -115,9 +123,19 @@ public class Camera {
     }
 
     public void closeCamera(){
+        if(isRecording){
+            startRecording();
+        }
         isOpen = false;
         capture.release();
         main.interrupt();
+    }
+
+    private Mat addMonitorOverlay(Mat frame){
+        if(!frame.empty() && isRecording) {
+            Imgproc.putText(frame, "Recording" , new Point(40, 40), Core.FONT_HERSHEY_PLAIN , 2.0, new Scalar(0, 0, 255));
+        }
+        return frame;
     }
 
     private Mat grabFrame(){

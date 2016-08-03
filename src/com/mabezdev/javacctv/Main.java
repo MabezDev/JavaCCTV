@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 public class Main extends Application {
@@ -12,18 +13,20 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("FXML/Controller.fxml"));
-        primaryStage.setMaximized(true);
-        primaryStage.setTitle("Hello World");
-        primaryStage.setScene(new Scene(root, 300, 275));
-
         FXMLLoader loader = new FXMLLoader(
                 getClass().getResource(
                         "FXML/Controller.fxml"
                 )
         );
         loader.load();
+
+        GridPane root = loader.getRoot();
         mainController = loader.getController();
+
+        primaryStage.setMaximized(true);
+        primaryStage.setTitle("Hello World");
+        primaryStage.setScene(new Scene(root, 300, 275));
+
         primaryStage.show();
     }
 
