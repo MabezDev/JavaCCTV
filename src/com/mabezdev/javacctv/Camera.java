@@ -37,7 +37,7 @@ public class Camera {
 
     public static final SimpleDateFormat timeOnly = new SimpleDateFormat ("HH.mm.ss");
     public static final SimpleDateFormat dateOnly = new SimpleDateFormat ("dd.MM.yy");
-    public static final int MP4_CODEC_ID = 66;
+    public static final int MP4_CODEC_ID = 32;//66;
 
 
     public Camera(int cameraID,int fps){

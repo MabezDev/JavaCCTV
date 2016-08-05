@@ -54,7 +54,7 @@ public class Controller implements Initializable{
             if (System.getProperty("sun.arch.data.model").equals("32")) {
                 System.loadLibrary(Core.NATIVE_LIBRARY_NAME + "_32");
             } else if (System.getProperty("sun.arch.data.model").equals("64")) {
-                System.loadLibrary(Core.NATIVE_LIBRARY_NAME + "_64");
+                System.loadLibrary(Core.NATIVE_LIBRARY_NAME + "_64"); //currently just loading 32bit even for 64
             } else {
                 System.out.println(System.getProperty("sun.arch.data.model") + " is not a supported architecture");
             }
@@ -67,6 +67,7 @@ public class Controller implements Initializable{
         System.out.println(RECORD_LOCATION);
         makeDirectory(RECORD_LOCATION);
 
+        testCodecs();
 
         cameraUI = FXCollections.observableArrayList();
 
@@ -111,6 +112,15 @@ public class Controller implements Initializable{
             }
         }
         v.release();
+
+        File tester = new File(System.getProperty("user.dir") + File.separator+ "pls.mp4");
+        if(tester.exists()){
+            if(tester.delete()){
+                System.out.println("Codec test file deleted!");
+            } else {
+                System.out.println("Failed to delete test file");
+            }
+        }
     }
 
     private void checkForMotion(){ //motion detection method
