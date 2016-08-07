@@ -14,6 +14,8 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static com.mabezdev.javacctv.Utils.Utility.dateOnly;
+import static com.mabezdev.javacctv.Utils.Utility.timeOnly;
 import static java.lang.Thread.sleep;
 import static org.opencv.core.CvType.CV_8UC3;
 import static org.opencv.videoio.Videoio.CAP_PROP_FORMAT;
@@ -35,8 +37,7 @@ public class Camera {
     private int cameraId;
     private int FPS = 12;
 
-    public static final SimpleDateFormat timeOnly = new SimpleDateFormat ("HH.mm.ss");
-    public static final SimpleDateFormat dateOnly = new SimpleDateFormat ("dd.MM.yy");
+
     public static final int MP4_CODEC_ID = 32;//66;
 
 
@@ -124,7 +125,7 @@ public class Camera {
 
     public void closeCamera(){
         if(isRecording){
-            startRecording();
+            stopRecording();
         }
         isOpen = false;
         capture.release();

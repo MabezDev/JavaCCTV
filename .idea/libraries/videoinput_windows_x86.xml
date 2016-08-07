@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="videoinput-windows-x86">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/Downloads/javacv-1.1-bin/javacv-bin/videoinput-windows-x86.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

@@ -1,5 +1,6 @@
 package com.mabezdev.javacctv;
 
+import com.mabezdev.javacctv.Utils.Utility;
 import com.sun.deploy.util.SystemUtils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -37,7 +38,8 @@ public class Controller implements Initializable{
     private boolean isMonitoring = false;
     private boolean isRecording = false;
 
-    private ArrayList<Integer> connectedCameras;
+    //private ArrayList<Integer> connectedCameras;
+    private String[] connectedCameras;
     private ObservableList<CameraUI> cameraUI;
 
     @FXML
@@ -49,6 +51,7 @@ public class Controller implements Initializable{
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        System.setProperty("platform.dependencies","true");
         System.out.println(System.getProperty("os.name").toLowerCase());
         if(System.getProperty("os.name").toLowerCase().contains("windows")) {
             if (System.getProperty("sun.arch.data.model").equals("32")) {
@@ -67,13 +70,13 @@ public class Controller implements Initializable{
         System.out.println(RECORD_LOCATION);
         makeDirectory(RECORD_LOCATION);
 
-        testCodecs();
+        //testCodecs();
 
         cameraUI = FXCollections.observableArrayList();
 
-        connectedCameras = getDevices(10);
+        connectedCameras = Utility.getDevicesWin32();
 
-        if(connectedCameras.size() == 0){
+        if(connectedCameras.length == 0){
             showDialog("No camera's detected!","No camera's detected!","No camera's were found or are being used by another program, plug one or more in and restart the program.", Alert.AlertType.INFORMATION);
             System.exit(0);
         }
@@ -82,9 +85,9 @@ public class Controller implements Initializable{
         gridView.setHgap(10);
         gridView.setVgap(10);
 
-        for(int i=0; i < connectedCameras.size(); i++){
-            CameraUI cam = new CameraUI(connectedCameras.get(i));
-            gridView.add(cam,0,i+1);
+        for(int i=0; i < connectedCameras.length ; i++){
+            CameraUI cam = new CameraUI(connectedCameras[i],0);//zero need to calculated to support multiple of the same device
+            gridView.add(cam,i,0);
             cameraUI.add(cam);
         }
     }
